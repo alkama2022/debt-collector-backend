@@ -9,7 +9,7 @@ from apps.tenancy.org import get_org
 
 class AuditLogList(generics.ListAPIView):
     serializer_class = AuditLogSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["action", "target_type", "actor"]
 
@@ -32,7 +32,7 @@ class AuditLogList(generics.ListAPIView):
 
 class AuditLogCreate(APIView):
     """Internal endpoint — create an audit log entry. Used by frontend and other services."""
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         action = request.data.get("action", "")
@@ -74,7 +74,7 @@ class AICommunicationAuditList(generics.ListAPIView):
     """
 
     serializer_class = AICommunicationAuditSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["language_selected", "channel", "escalated", "outcome", "customer"]
 
@@ -100,7 +100,7 @@ class AICommunicationAuditList(generics.ListAPIView):
 class AICommunicationAuditCreate(APIView):
     """Internal — record one AI communication. Never blocks the send."""
 
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         from apps.audit.services import record_ai_communication

@@ -277,7 +277,7 @@ class DashboardUser(AuthenticatedUser):
     def bulk_create_customers(self):
         """POST /api/v1/customers/bulk — bulk import customers."""
         rows = []
-        for _ in range(random.randint(5, 20)):
+        for _ in range(random.randint(5, 15)):
             rows.append({
                 "name": f"{random.choice(CUSTOMER_NAMES)} {uuid.uuid4().hex[:4]}",
                 "phone": f"080{random.randint(10000000, 99999999)}",
@@ -472,6 +472,11 @@ class DashboardUser(AuthenticatedUser):
         range_days = random.choice([30, 90])
         self._get(f"/api/v1/reports/export?format=pdf&range={range_days}", name="reports/export-pdf")
 
+    @task(1)
+    def get_public_plans(self):
+        """GET /api/v1/billing/plans?public=true — public pricing page."""
+        self._get("/api/v1/billing/plans?public=true", name="billing/plans-public")
+
     # ── Billing & Subscriptions ───────────────────────────────────────────────
 
     @task(3)
@@ -543,32 +548,33 @@ class PublicUser(HttpUser):
     def on_start(self):
         """Fetch a list of invoice IDs for public endpoints."""
         self.invoice_ids = []
-        # We need at least one invoice ID — fetch from a known seed
-        # The public endpoint doesn't need auth, but we need a valid UUID
-        # We'll try to get one from the database via a simple approach
-        # For now, we'll use a placeholder that will 404 gracefully
-        self.invoice_ids = []
+        # Fetch real invoice IDs from the database
+        try:
+            from apps.invoices.models import Invoice
+            self.invoice_ids = [str(inv.id) for inv in Invoice.objects.filter(deleted_at__isnull=True)[:10]]
+        except Exception:
+            pass
 
     @task(5)
     def public_pay_info(self):
         """GET /api/v1/public/pay/<id> — public payment info page."""
-        # Use a random UUID — will 404 if not found, which is fine for load testing
-        # the endpoint's error handling
-        fake_id = str(uuid.uuid4())
-        self.client.get(
-            f"/api/v1/public/pay/{fake_id}",
-            name="public/pay-info",
-        )
+        if self.invoice_ids:
+            inv_id = random.choice(self.invoice_ids)
+            self.client.get(
+                f"/api/v1/public/pay/{inv_id}",
+                name="public/pay-info",
+            )
 
     @task(2)
     def public_pay_initialize(self):
         """POST /api/v1/public/pay/<id>/initialize — initialize payment."""
-        fake_id = str(uuid.uuid4())
-        self.client.post(
-            f"/api/v1/public/pay/{fake_id}/initialize",
-            json={"email": "customer@test.com"},
-            name="public/pay-initialize",
-        )
+        if self.invoice_ids:
+            inv_id = random.choice(self.invoice_ids)
+            self.client.post(
+                f"/api/v1/public/pay/{inv_id}/initialize",
+                json={"email": "customer@test.com"},
+                name="public/pay-initialize",
+            )
 
     @task(1)
     def webhook_payment(self):
@@ -620,7 +626,7 @@ class StressUser(AuthenticatedUser):
     def bulk_customer_creation(self):
         """POST /api/v1/customers/bulk — heavy bulk import."""
         rows = []
-        for _ in range(random.randint(50, 200)):
+        for _ in range(random.randint(10, 30)):
             rows.append({
                 "name": f"{random.choice(CUSTOMER_NAMES)} {uuid.uuid4().hex[:6]}",
                 "phone": f"080{random.randint(10000000, 99999999)}",

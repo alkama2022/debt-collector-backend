@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import AuditLog, AICommunicationAudit
-from .serializers import AuditLogSerializer
+from .serializers import AuditLogSerializer, AICommunicationAuditSerializer
 from apps.tenancy.org import get_org
 
 
@@ -73,6 +73,7 @@ class AICommunicationAuditList(generics.ListAPIView):
     database console.
     """
 
+    serializer_class = AICommunicationAuditSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["language_selected", "channel", "escalated", "outcome", "customer"]

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <meta name="description" content="Collect Niger helps Nigerian businesses recover outstanding payments faster with automated reminders and debt tracking.">
+    <title>Collect Niger · Recover Payments Faster</title>
+
+    <style>
+        /* ============================================
+           DESIGN TOKENS
+           ============================================ */
+        :root {
+            --color-bg: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #0f172a;
+            --color-text-muted: #64748b;
+            --color-text-soft: #475569;
+            --color-primary: #16a34a;
+            --color-primary-dark: #15803d;
+            --color-primary-soft: #dcfce7;
+            --color-accent: #0369a1;
+            --color-accent-soft: #e0f2fe;
+            --color-border: #e2e8f0;
+            --color-border-strong: #cbd5e1;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.10);
+            --shadow-primary: 0 8px 24px rgba(22, 163, 74, 0.28);
+
+            --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ============================================
+           RESET
+           ============================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+            background-color: var(--color-bg);
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(22, 163, 74, 0.10), transparent),
+                radial-gradient(ellipse 60% 50% at 100% 100%, rgba(3, 105, 161, 0.06), transparent);
+            background-attachment: fixed;
+            color: var(--color-text);
+            line-height: 1.5;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1.25rem;
+            width: 100%;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 780px;
+            width: 100%;
+            margin: 0 auto;
+            animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* ============================================
+           BADGE
+           ============================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-surface);
+            color: var(--color-accent);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            margin-bottom: 1.75rem;
+            border: 1px solid var(--color-accent-soft);
+            box-shadow: var(--shadow-xs);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .badge::before {
+            content: '';
+            display: block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+           HEADLINE
+           ============================================ */
+        h1 {
+            font-size: clamp(2.25rem, 7vw, 3.75rem);
+            line-height: 1.08;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            margin-bottom: 1.25rem;
+            color: var(--color-text);
+            text-wrap: balance;
+            padding: 0 0.25rem;
+        }
+
+        h1 span {
+            color: var(--color-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Subtle hand-drawn underline accent */
+        h1 span::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0.02em;
+            height: 0.32em;
+            background: var(--color-primary-soft);
+            border-radius: var(--radius-sm);
+            z-index: -1;
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* ============================================
+           SUBTITLE
+           ============================================ */
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            line-height: 1.65;
+            color: var(--color-text-soft);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 0.25rem;
+            text-wrap: pretty;
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 0 0.25rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            padding: 0.95rem 1.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: -0.005em;
+            transition:
+                background var(--transition-fast),
+                border-color var(--transition-fast),
+                box-shadow var(--transition-base),
+                transform var(--transition-fast);
+            border: 1.5px solid transparent;
+            width: 100%;
+            min-height: 54px;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.995);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid rgba(22, 163, 74, 0.4);
+            outline-offset: 3px;
+        }
+
+        /* Primary */
+        .primary {
+            background: var(--color-primary);
+            color: #ffffff;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .primary::after {
+            content: '→';
+            font-size: 1.1em;
+            line-height: 1;
+            transition: transform var(--transition-base);
+            display: inline-block;
+        }
+
+        .primary:hover,
+        .primary:focus-visible {
+            background: var(--color-primary-dark);
+            box-shadow: 0 12px 32px rgba(22, 163, 74, 0.35);
+        }
+
+        .primary:hover::after {
+            transform: translateX(4px);
+        }
+
+        /* Secondary */
+        .secondary {
+            background: var(--color-surface);
+            color: var(--color-text);
+            border-color: var(--color-border-strong);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .secondary:hover,
+        .secondary:focus-visible {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ============================================
+           TRUST STRIP (subtle, professional)
+           ============================================ */
+        .trust {
+            margin-top: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            letter-spacing: 0.01em;
+            padding: 0 0.5rem;
+            animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+        }
+
+        .trust-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        .trust-item svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            color: var(--color-primary);
+        }
+
+        .trust-divider {
+            display: none;
+            width: 1px;
+            height: 14px;
+            background: var(--color-border-strong);
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE — TABLET & DESKTOP (>= 640px)
+           ============================================ */
+        @media (min-width: 640px) {
+            .hero {
+                padding: 3rem 2rem;
+            }
+
+            .buttons {
+                flex-direction: row;
+                justify-content: center;
+                max-width: 520px;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: auto;
+                min-width: 170px;
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .trust-divider {
+                display: block;
+            }
+
+            .trust {
+                gap: 0.75rem 1.25rem;
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE — LARGE DESKTOP (>= 1024px)
+           ============================================ */
+        @media (min-width: 1024px) {
+            .hero {
+                padding: 4rem 3rem;
+            }
+
+            .badge {
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                margin-bottom: 1.5rem;
+            }
+
+            .subtitle {
+                margin-bottom: 3rem;
+            }
+        }
+
+        /* ============================================
+           VERY SMALL PHONES (<= 360px)
+           ============================================ */
+        @media (max-width: 360px) {
+            .badge {
+                font-size: 0.72rem;
+                padding: 0.4rem 0.8rem;
+                white-space: normal;
+                text-align: center;
+                max-width: 95%;
+            }
+
+            .btn {
+                font-size: 0.98rem;
+                padding: 0.85rem 1.2rem;
+                min-height: 50px;
+            }
+
+            h1 {
+                font-size: 1.85rem;
+            }
+
+            .trust {
+                font-size: 0.72rem;
+            }
+        }
+
+        /* ============================================
+           LANDSCAPE PHONE (short height)
+           ============================================ */
+        @media (max-height: 620px) and (orientation: landscape) {
+            .hero {
+                align-items: flex-start;
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+
+            .badge {
+                margin-bottom: 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .buttons {
+                flex-direction: row;
+                gap: 0.75rem;
+                max-width: 100%;
+            }
+
+            .btn {
+                width: auto;
+                min-height: 46px;
+                padding: 0.7rem 1.25rem;
+                font-size: 0.92rem;
+            }
+
+            .trust {
+                margin-top: 1.5rem;
+            }
+        }
+
+        /* ============================================
+           ACCESSIBILITY — REDUCED MOTION
+           ============================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .btn:active {
+                transform: none;
+            }
+        }
+
+        /* ============================================
+           DARK MODE (respects system preference)
+           ============================================ */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #0b1220;
+                --color-surface: #111c30;
+                --color-text: #f1f5f9;
+                --color-text-muted: #94a3b8;
+                --color-text-soft: #cbd5e1;
+                --color-border: #1e293b;
+                --color-border-strong: #334155;
+                --color-primary-soft: rgba(22, 163, 74, 0.18);
+                --color-accent-soft: rgba(3, 105, 161, 0.18);
+            }
+
+            body {
+                background-image:
+                    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(22, 163, 74, 0.10), transparent),
+                    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(3, 105, 161, 0.08), transparent);
+            }
+
+            .secondary {
+                background: var(--color-surface);
+                color: var(--color-text);
+            }
+
+            .secondary:hover,
+            .secondary:focus-visible {
+                background: #16243b;
+            }
+
+            .badge {
+                background: var(--color-surface);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="hero">
+        <div class="hero-content">
+
+            <div class="badge">
+                Built for Nigerian Businesses
+            </div>
+
+            <h1>
+                Recover Outstanding Payments
+                <span>Faster.</span>
+            </h1>
+
+            <p class="subtitle">
+                Collect Niger helps Nigerian businesses track unpaid invoices,
+                automate payment reminders, manage customer debts, and monitor
+                collections from one simple platform.
+            </p>
+
+            <div class="buttons">
+                <a href="/api/v1/auth/signup" class="btn primary" role="button">
+                    Get Started
+                </a>
+
+                <a href="/api/v1/auth/login" class="btn secondary" role="button">
+                    Sign In
+                </a>
+            </div>
+
+            <!-- Professional trust strip -->
+            <div class="trust">
+                <span class="trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    No credit card required
+                </span>
+
+                <span class="trust-divider" aria-hidden="true"></span>
+
+                <span class="trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    Bank-level security
+                </span>
+
+                <span class="trust-divider" aria-hidden="true"></span>
+
+                <span class="trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Set up in 5 minutes
+                </span>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

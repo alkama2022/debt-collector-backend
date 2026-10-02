@@ -41,7 +41,6 @@ def get_provider(channel: str) -> BaseProvider:
 def _get_messaging_provider(channel: str) -> BaseProvider:
     """Get provider for WhatsApp or SMS."""
     from .mock import MockProvider
-    from .africastalking import AfricasTalkingProvider
 
     configured_provider = getattr(settings, "WHATSAPP_PROVIDER", "mock").lower()
     at_key = getattr(settings, "AFRICASTALKING_API_KEY", "")
@@ -54,6 +53,7 @@ def _get_messaging_provider(channel: str) -> BaseProvider:
         return MockProvider()
 
     if configured_provider == "africastalking":
+        from .africastalking import AfricasTalkingProvider
         return AfricasTalkingProvider()
 
     # Unknown provider — safe fallback
@@ -81,12 +81,12 @@ def _get_email_provider() -> BaseProvider:
 def _get_voice_provider() -> BaseProvider:
     """Get voice provider."""
     from .mock import MockProvider
-    from .africastalking import AfricasTalkingProvider
 
     voice_provider = getattr(settings, "VOICE_PROVIDER", getattr(settings, "WHATSAPP_PROVIDER", "mock")).lower()
     at_key = getattr(settings, "AFRICASTALKING_API_KEY", "")
 
     if voice_provider == "africastalking" and at_key:
+        from .africastalking import AfricasTalkingProvider
         return AfricasTalkingProvider()
 
     if voice_provider != "mock":

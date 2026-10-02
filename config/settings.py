@@ -171,6 +171,17 @@ if DEBUG:
         "django.contrib.auth.hashers.MD5PasswordHasher",
         "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     ]
+else:
+    # Production hardening (behind Render's TLS proxy)
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
+    SECURE_HSTS_SECONDS = config("SECURE_HSTS_SECONDS", default=31536000, cast=int)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = "same-origin"
 
 
 # ============================================================
@@ -268,6 +279,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.UserRateThrottle", "rest_framework.throttling.AnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {"user": "2000/min", "anon": "500/min", "auth": "100/min"},
+    # Our API uses ?format=csv/pdf for report exports. Disable DRF's
+    # URL format override (default 'format') or it 404s those requests.
+    "URL_FORMAT_OVERRIDE": None,
     "EXCEPTION_HANDLER": "apps.tenancy.exceptions.custom_exception_handler",
 }
 

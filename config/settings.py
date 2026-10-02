@@ -372,6 +372,26 @@ AFRICASTALKING_API_KEY = config(
 
 
 # ============================================================
+# PAYSTACK
+# ============================================================
+
+PAYSTACK_SECRET_KEY = config(
+    "PAYSTACK_SECRET_KEY",
+    default="",
+)
+
+PAYSTACK_PUBLIC_KEY = config(
+    "PAYSTACK_PUBLIC_KEY",
+    default="",
+)
+
+PAYSTACK_WEBHOOK_SECRET = config(
+    "PAYSTACK_WEBHOOK_SECRET",
+    default="",
+)
+
+
+# ============================================================
 # SECURITY SETTINGS
 # ============================================================
 

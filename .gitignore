@@ -30,7 +30,7 @@ myenv/
 .env
 .env.*
 !.env.example
-
+myenv
 # ================================
 
 # Django

@@ -202,9 +202,12 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# Only include the global static dir if it actually exists. Git does not track
+# empty directories, so on Render this folder is absent and listing it produces
+# a staticfiles.W004 warning on every management command.
+STATICFILES_DIRS = []
+if (BASE_DIR / "static").is_dir():
+    STATICFILES_DIRS.append(BASE_DIR / "static")
 
 
 # ============================================================

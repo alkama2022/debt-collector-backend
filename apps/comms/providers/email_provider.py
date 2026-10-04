@@ -79,7 +79,7 @@ body{{font-family:Inter,Arial,sans-serif;background:#f8fafc;margin:0;padding:0}}
 </style></head>
 <body>
 <div class="card">
-  <div class="header">💰 Payment Reminder — {org_name}</div>
+  <div class="header">Payment Reminder — {org_name}</div>
   <div class="body">{lines}</div>
   <a class="btn" href="{pay_link}">Pay Now</a>
   <div class="footer">This is an automated reminder from {org_name} via CollectNaija.<br>

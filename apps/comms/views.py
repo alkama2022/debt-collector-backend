@@ -53,6 +53,9 @@ class CommunicationEventList(generics.ListCreateAPIView):
                 raise PermissionDenied({"detail": reason2, "code": "USAGE_LIMIT_REACHED"})
         idem = self.request.headers.get("X-Idempotency-Key") or self.request.headers.get("Idempotency-Key")
         obj = serializer.save(org=org, idempotency_key=idem or serializer.validated_data.get("idempotency_key"))
+        if obj.scheduled_for is None:
+            obj.scheduled_for = timezone.now()
+            obj.save(update_fields=["scheduled_for"])
         # Meter usage
         if org and channel:
             try:

@@ -2,13 +2,19 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.throttling import AnonRateThrottle
 from django.contrib.auth import authenticate
 from .serializers import SignupSerializer, UserSerializer
+
+
+class AuthAnonThrottle(AnonRateThrottle):
+    scope = "auth"
 
 
 class SignupView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
+    throttle_classes = [AuthAnonThrottle]
 
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
@@ -33,6 +39,7 @@ class LoginView(APIView):
     """
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
+    throttle_classes = [AuthAnonThrottle]
 
     def post(self, request):
         email = (request.data.get("email") or "").strip().lower()

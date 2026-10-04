@@ -7,6 +7,7 @@ Runs every 2 minutes via Celery Beat.
 """
 import logging
 from celery import shared_task
+from django.db import models
 from django.utils import timezone
 
 logger = logging.getLogger(__name__)
@@ -34,7 +35,9 @@ def dispatch_queued_events(self):
         .select_related("org", "invoice", "customer", "customer__preferred_language")
         .filter(
             status=CommunicationEvent.Status.QUEUED,
-            scheduled_for__lte=now,
+        )
+        .filter(
+            models.Q(scheduled_for__lte=now) | models.Q(scheduled_for__isnull=True)
         )
         .order_by("scheduled_for")[:BATCH_SIZE]
     )

@@ -37,7 +37,7 @@ class PaystackProvider(PaymentProvider):
         if self._is_mock():
             return {"reference": reference, "authorization_url": f"{settings.FRONTEND_URL}/billing/success?ref={reference}", "mock": True}
         from apps.payments.paystack import initialize_payment
-        email = metadata.get("email") or "customer@collectnaija.test"
+        email = metadata.get("email") or "customer@collectnaija.com"
         return initialize_payment(email, amount_minor, reference, metadata, callback_url=f"{settings.FRONTEND_URL}/billing/success")
 
     def create_payment_link(self, org, amount_minor, currency, reference, metadata):

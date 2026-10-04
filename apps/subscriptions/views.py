@@ -194,12 +194,12 @@ class SubscribeView(APIView):
                 sub.current_period_start = now
                 # monthly
                 sub.current_period_end = now + timezone.timedelta(days=30)
-                # Clear stale trial dates when leaving a trial (e.g. downgrade
-                # to free). Leaving them set made a non-trialing subscription
-                # report a trial_end it was no longer in.
-                if plan.trial_days == 0:
-                    sub.trial_start = None
-                    sub.trial_end = None
+                # Clear stale trial dates whenever we leave the trialing state.
+                # Previously they were only cleared when the new plan had
+                # trial_days == 0, so re-subscribing to a trialing plan left an
+                # ACTIVE sub with a dangling future trial_end.
+                sub.trial_start = None
+                sub.trial_end = None
             sub.mrr_minor = int(plan.price * 100) - discount_minor
             sub.cancel_at_period_end = False
             sub.save()

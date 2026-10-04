@@ -23,7 +23,7 @@ def initialize_payment(email: str, amount_minor: int, reference: str, metadata: 
             "mock": True,
         }
     payload = {
-        "email": email or "customer@collectnaija.mock",
+        "email": email or "customer@collectnaija.com",
         "amount": amount_minor,
         "reference": reference,
         "metadata": metadata,

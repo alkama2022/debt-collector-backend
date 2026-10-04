@@ -88,7 +88,7 @@ def _initialize_paystack(request, org_required=False):
     # Build reference and metadata
     reference = f"CN-{invoice.invoice_number}-{str(uuid.uuid4())[:8].upper()}"
     amount_minor = int(Decimal(invoice.balance) * Decimal(100))
-    email = invoice.customer.email or f"{invoice.customer.phone or 'customer'}@collectnaija.mock"
+    email = invoice.customer.email or f"{invoice.customer.phone or 'customer'}@collectnaija.com"
     frontend_base = getattr(settings, "FRONTEND_URL", "") or request.build_absolute_uri("/").split("/api")[0]
     pay_url = f"{frontend_base.rstrip('/')}/pay/{invoice.id}"
     callback_url = f"{pay_url}?reference={reference}"
